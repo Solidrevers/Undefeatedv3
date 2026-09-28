@@ -1036,10 +1036,6 @@ mobileVisible = not mobileVisible
 menuWindow.Visible = mobileVisible
 end)
 
--- Show button on touch devices
-UIS.TouchEnabled:Connect(function()
-mobileBtn.Visible = true
-end)
 mobileBtn.Visible = UIS.TouchEnabled
 end
 end
