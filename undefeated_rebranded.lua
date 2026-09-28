@@ -1,1 +1,1 @@
-file:///tmp/undefeated_rebranded.lua
+<RAW_CONTENT>
