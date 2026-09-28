@@ -911,7 +911,7 @@ local page = TabPages["Misc"]
 createSection(page, "Miscellaneous")
 
 createToggle(page, "GUI Visible", true, function(v)
-menuWindow.Visible = v
+sg.Enabled = v
 end)
 
 createToggle(page, "Hide HUD", false, function(v)
@@ -970,6 +970,13 @@ applyGuiTheme(currentGuiTheme)
 pcall(saveConfig)
 end)
 
+createSection(page, "Mobile")
+
+createToggle(page, "Show GUI Button", not menuWindow.Visible, function(v)
+	menuWindow.Visible = not v
+	mobileShowBtn.Visible = v
+end)
+
 createSection(page, "Info")
 local infoLabel = Instance.new("TextLabel",page)
 infoLabel.Size=UDim2.new(1,-10,0,40)
@@ -1007,37 +1014,35 @@ menuWindow.Position=UDim2.new(startPos.X.Scale,startPos.X.Offset+delta.X,startPo
 end
 end)
 
--- Toggle GUI with RightShift
+-- Mobile show button (appears when GUI is hidden)
+local mobileShowBtn = Instance.new("TextButton")
+mobileShowBtn.Name = "UndefeatedShowBtn"
+mobileShowBtn.Size = UDim2.new(0, 50, 0, 50)
+mobileShowBtn.Position = UDim2.new(0, 10, 0.5, -25)
+mobileShowBtn.BackgroundColor3 = Color3.fromRGB(80, 120, 255)
+mobileShowBtn.Text = "≡"
+mobileShowBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+mobileShowBtn.TextSize = 22
+mobileShowBtn.Font = Enum.Font.GothamBold
+mobileShowBtn.BorderSizePixel = 0
+mobileShowBtn.Visible = not menuWindow.Visible
+Instance.new("UICorner", mobileShowBtn).CornerRadius = UDim.new(0, 25)
+Instance.new("UIStroke", mobileShowBtn).Color = Color3.fromRGB(100, 160, 255)
+mobileShowBtn.Parent = sg
+
+mobileShowBtn.MouseButton1Click:Connect(function()
+	menuWindow.Visible = true
+	mobileShowBtn.Visible = false
+end)
+
+-- Toggle GUI with RightShift (also updates mobile button)
 UIS.InputBegan:Connect(function(input, processed)
 	if processed then return end
 	if input.KeyCode == Enum.KeyCode.RightShift then
 		menuWindow.Visible = not menuWindow.Visible
+		mobileShowBtn.Visible = not menuWindow.Visible
 	end
 end)
-
--- Mobile show/hide button
-do
-local mobileBtn = Instance.new("TextButton")
-mobileBtn.Size = UDim2.new(0,44,0,44)
-mobileBtn.Position = UDim2.new(1,-50,0,10)
-mobileBtn.BackgroundColor3 = Color3.fromRGB(30,30,50)
-mobileBtn.Text = "☰"
-mobileBtn.TextColor3 = Color3.fromRGB(255,255,255)
-mobileBtn.TextSize = 18
-mobileBtn.Font = Enum.Font.GothamBold
-mobileBtn.BorderSizePixel = 0
-mobileBtn.ZIndex = 10
-Instance.new("UICorner",mobileBtn).CornerRadius = UDim.new(0,8)
-parentGui(mobileBtn)
-
-local mobileVisible = false
-mobileBtn.MouseButton1Click:Connect(function()
-mobileVisible = not mobileVisible
-menuWindow.Visible = mobileVisible
-end)
-
-mobileBtn.Visible = UIS.TouchEnabled
-end
 end
 
 -- // Apply GUI Theme
